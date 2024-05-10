@@ -87,7 +87,7 @@ def main():
     cam_pos=args.position
     show_faces=args.faces
     background=args.background
-    z=np.float(args.zoom)
+    z=np.float64(args.zoom)
     offset=args.offset
     show_axes=args.axes
     show_labels=args.axis_labels
@@ -482,18 +482,22 @@ def main():
     #print("test")
     axis_lab=np.array([r"k1","k2","k3"])
     min_k=np.max(np.linalg.norm(recip_latt,axis=1))
+    l=np.zeros((3))
+    recip_latt_labels = recip_latt
+    arrow_scale=np.array([0.2,0.2,0.2])
     if show_axes:
         for i in range(0,3):
-            l=np.linalg.norm(recip_latt[i])
+            l[i]=np.linalg.norm(recip_latt[i])
             
-            r=min_k/l
-            arrow=pv.Arrow([0,0,0],0.75*recip_latt[i],shaft_radius=r*0.003,tip_radius=r*0.02,tip_length=r*0.05,scale="auto")
-            p.add_mesh(arrow,color="blue")
+            r=min_k/l[i]
+            arrow=pv.Arrow([0.2,0,0],0.25*recip_latt[i]*(arrow_scale[i]/l[i]),shaft_radius=0.015,tip_radius=0.05,tip_length=0.25,scale="auto")
+            p.add_mesh(arrow,color="black")
+            recip_latt_labels[i] = recip_latt_labels[i]*(arrow_scale[i]/l[i]) 
         if show_labels:
             if not save:
-                p.add_point_labels(0.75*recip_latt,axis_lab,shape=None,always_visible=True,show_points=False,font_family="courier",font_size=24,italic=True)
+                p.add_point_labels(0.3*recip_latt_labels+[0.21,0,-0.005],axis_lab,shape=None,always_visible=True,show_points=False,font_family="courier",font_size=24,italic=True)
             else:
-                p.add_point_labels(0.75*recip_latt,axis_lab,shape=None,always_visible=True,show_points=False,font_family="times",font_size=120)
+                p.add_point_labels(0.35*recip_latt_labels+[0.21,0,-0.01],axis_lab,shape=None,always_visible=True,show_points=False,font_family="times",font_size=120)
                 
     
     #Special points labels
